@@ -94,12 +94,13 @@ For GTX1080, we would better use CUDA8 since CUDA7.5 has a lot of problems.
 You can download the [CUDA8.0 on the website](https://developer.nvidia.com/cuda-release-candidate-download), but you have to sign up.
 
 The guide of download is very clear. My option is:
+```
 >OS: Linux
 >Architecture: x86_64
 >Distribution: Ubuntu
 >Version: 16.04
 >Installer Type: runfile(local)
-
+```
 Pay attention: People found out the deb(local) has a lot of problems, so please choose 'runfile'.
 
 Open a terminal, input
@@ -331,8 +332,9 @@ sudo chmod a+r /usr/local/cuda/lib64/libcudnn*
 ```
 Well done!
 
-# 5.TensorFlow GPU installation
+## 5.TensorFlow GPU installation
 Here, we installed the TensorFlow GPU version by compiling the original code. TensorFlow has CPU version which is very easy to install just by using pip under Ubuntu enviroment. But the need GPU version to support the GTX1080.
+#
 
 1) Related Python enviroment set up
 
@@ -341,17 +343,18 @@ The default python version is 2.7.12:
 sudo apt-get install python-pip
 sudo apt-get install python-numpy swig python-dev python-wheel
 ```
+#
 This command just install the pip version 8.1.1, but we need 9.0.1 when we download Tensorflow, so we upgrade:
 ```bash
 sudo -H pip install --upgrade pip
 ```
 sudo is "super user do". This will allow you to execute commands as a super user. The H flag tells sudo to keep the home directory of the current user. This way when pip installs things, like pip itself, it uses the appropriate directory.
-
+#
 You can check your pip version:
 ```bash
 pip --version
 ```
-
+#
 2) Bazel installation
 [Bazel](https://bazel.build/) is Google's own build tool, now publicly available in Beta. Bazel has built-in support for building both client and server software, including client applications for both Android and iOS platforms. It also provides an extensible framework that you can use to develop your own build rules.
 So it is similar to MAKE tool in linux, and we use it to build TensorFlow.
@@ -374,7 +377,7 @@ chmod +x bazel-0.4.3-installer-linux-x86_64.sh
 ./bazel-0.4.3-installer-linux-x86_64.sh --user
 ```
 Please make sure your version number is consistent with the download one.
-
+#
 If installation is succesfully, you will see this on the bottom:
 ```
 Bazel is now installed!
@@ -385,13 +388,13 @@ source /home/textminer/.bazel/bin/bazel-complete.bash
 
 See http://bazel.io/docs/getting-started.html to start a new project!
 ```
-
+#
 Then write the path enviroment in the .bashrc file:
 ```bash
 source /home/Your_User_name/.bazel/bin/bazel-complete.bash
 export PATH=$PATH:/home/Your_User_name/.bazel/bin
 ```
-
+#
 The reason of add path variable is
 ```
 Bazel comes with a bash completion script. To install it:
@@ -400,12 +403,13 @@ Build it with Bazel: bazel build //scripts:bazel-complete.bash.
 Copy the script bazel-bin/scripts/bazel-complete.bash to your completion folder (/etc/bash_completion.d directory under Ubuntu). 
 If you don’t have a completion folder, you can copy it wherever suits you and simply insert source /path/to/bazel-complete.bash in your ~/.bashrc file (under OS X, put it in your ~/.bash_profile file).
 ```
-
+#
 Apply the change of .bashrc
 ```bash
 source ~/.bashrc
 ```
 Bazel installation complete!
+#
 
 3) Tensorflow complie and installation
 
@@ -413,31 +417,35 @@ Clone tensorflow from github:
 ```bash
 git clone https://github.com/tensorflow/tensorflow
 ```
+#
 And we need libcurl library to configure tensorflow:
 ```bash
 sudo apt-get install libcurl3 libcurl3-dev
 ```
+#
 Then, we can configure tensorflow:
 ```bash
 ./configure
 ```
+#
 There are a lot of options, but just select 'yes' for:
 ```
 Google Cloud Platform.
 CUDA.
 ```
 And default setting for otherelse at this stage.
+#
 
 Install zlib1g-dev before use bazel to compile and install:
 ```bash
 sudo apt-get install zlib1g-dev
 ```
-
+#
 Bazel installation:
 ```bash
 bazel build -c opt --config=cuda //tensorflow/cc:tutorials_example_trainer
 ```
-
+#
 You will see the ending is:
 ```
 ……
@@ -445,7 +453,7 @@ Target //tensorflow/cc:tutorials_example_trainer up-to-date:
 bazel-bin/tensorflow/cc/tutorials_example_trainer
 INFO: Elapsed time: 897.845s, Critical Path: 533.72s
 ```
-
+#
 Test some official example in tensorflow to see wether use GTX1080 or not:
 ```bash
 bazel-bin/tensorflow/cc/tutorials_example_trainer --use_gpu
@@ -475,6 +483,7 @@ I tensorflow/core/common_runtime/gpu/gpu_device.cc:838] Creating TensorFlow devi
 ……
 ```
 Well, it works! 
+#
 However, we need more efford to connect tensorflow with python:
 ```bash
 bazel build -c opt --config=cuda //tensorflow/tools/pip_package:build_pip_package
@@ -482,7 +491,7 @@ bazel-bin/tensorflow/tools/pip_package/build_pip_package /tmp/tensorflow_pkg
 sudo pip install /tmp/tensorflow_pkg/tensorflow-0.12.1-cp27-cp27mu-linux_x86_64.whl
 ```
 Pay attention of .whl file, it could change with the update.
-
+#
 Go out from the tensorflow folder and try python:
 ```bash
 yaoxu@roosevelt:~$ python
@@ -497,6 +506,7 @@ I tensorflow/stream_executor/dso_loader.cc:125] successfully opened CUDA library
 I tensorflow/stream_executor/dso_loader.cc:125] successfully opened CUDA library libcurand.so.8.0 locally
 >>>
 ```
+#
 Well, everything is done! cheers!!!
 
 
