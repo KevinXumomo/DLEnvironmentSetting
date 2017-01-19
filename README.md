@@ -107,7 +107,7 @@ Open a terminal, input
 ```bash
 sudo sh cuda_8.0.27_linux.run
 ```
-
+#
 Pay attention: After execute the runfile, there are many notification for you choose, one of them is 'Install NVIDIA Accelerated Graphics Driver for Linux-x86_64 365xxx?'
 Please say 'NO!!!!' Because the version is lower than we installed.
 
@@ -175,7 +175,7 @@ sudo .run -silent -driver
 
 Logfile is /opt/temp//cuda_install_6583.log
 ```
-
+#
 Almost done!
 Then we write the enviroment variable into .bashrc file.
 
@@ -183,17 +183,116 @@ Then we write the enviroment variable into .bashrc file.
 cd
 vim .bashrc
 ```
-
+#
 Move to the bottom and write:
 
 ```bash
 export PATH=/usr/local/cuda-8.0/bin${PATH:+:${PATH}}
 export LD_LIBRARY_PATH=/usr/local/cuda-8.0/lib64${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
 ```
+#
 Finally, we can test the CUDA
 
 ```bash
 nvidia-smi
+```
+![](https://github.com/KevinXumomo/DLEnvironmentSetting/blob/master/nvidia_smi.png)
+#
+Then run couple examples:
+```bash
+cd NVIDIA_CUDA-8.0_Samples/1_Utilities/deviceQuery
+make
+```
+#
+```bash
+“/usr/local/cuda-8.0″/bin/nvcc -ccbin g++ -I../../common/inc -m64 -gencode arch=compute_20,code=sm_20 -gencode arch=compute_30,code=sm_30 -gencode arch=compute_35,code=sm_35 -gencode arch=compute_37,code=sm_37 -gencode arch=compute_50,code=sm_50 -gencode arch=compute_52,code=sm_52 -gencode arch=compute_60,code=sm_60 -gencode arch=compute_60,code=compute_60 -o deviceQuery.o -c deviceQuery.cpp
+“/usr/local/cuda-8.0″/bin/nvcc -ccbin g++ -m64 -gencode arch=compute_20,code=sm_20 -gencode arch=compute_30,code=sm_30 -gencode arch=compute_35,code=sm_35 -gencode arch=compute_37,code=sm_37 -gencode arch=compute_50,code=sm_50 -gencode arch=compute_52,code=sm_52 -gencode arch=compute_60,code=sm_60 -gencode arch=compute_60,code=compute_60 -o deviceQuery deviceQuery.o
+mkdir -p ../../bin/x86_64/linux/release
+cp deviceQuery ../../bin/x86_64/linux/release
+```
+```bash
+./deviceQuery
+```
+#
+```bash
+./deviceQuery Starting...
+
+ CUDA Device Query (Runtime API) version (CUDART static linking)
+
+Detected 1 CUDA Capable device(s)
+
+Device 0: "GeForce GTX 1080"
+  CUDA Driver Version / Runtime Version          8.0 / 8.0
+  CUDA Capability Major/Minor version number:    6.1
+  Total amount of global memory:                 8105 MBytes (8499167232 bytes)
+  (20) Multiprocessors, (128) CUDA Cores/MP:     2560 CUDA Cores
+  GPU Max Clock rate:                            1860 MHz (1.86 GHz)
+  Memory Clock rate:                             5005 Mhz
+  Memory Bus Width:                              256-bit
+  L2 Cache Size:                                 2097152 bytes
+  Maximum Texture Dimension Size (x,y,z)         1D=(131072), 2D=(131072, 65536), 3D=(16384, 16384, 16384)
+  Maximum Layered 1D Texture Size, (num) layers  1D=(32768), 2048 layers
+  Maximum Layered 2D Texture Size, (num) layers  2D=(32768, 32768), 2048 layers
+  Total amount of constant memory:               65536 bytes
+  Total amount of shared memory per block:       49152 bytes
+  Total number of registers available per block: 65536
+  Warp size:                                     32
+  Maximum number of threads per multiprocessor:  2048
+  Maximum number of threads per block:           1024
+  Max dimension size of a thread block (x,y,z): (1024, 1024, 64)
+  Max dimension size of a grid size    (x,y,z): (2147483647, 65535, 65535)
+  Maximum memory pitch:                          2147483647 bytes
+  Texture alignment:                             512 bytes
+  Concurrent copy and kernel execution:          Yes with 2 copy engine(s)
+  Run time limit on kernels:                     Yes
+  Integrated GPU sharing Host Memory:            No
+  Support host page-locked memory mapping:       Yes
+  Alignment requirement for Surfaces:            Yes
+  Device has ECC support:                        Disabled
+  Device supports Unified Addressing (UVA):      Yes
+  Device PCI Domain ID / Bus ID / location ID:   0 / 1 / 0
+  Compute Mode:
+     < Default (multiple host threads can use ::cudaSetDevice() with device simultaneously) >
+
+deviceQuery, CUDA Driver = CUDART, CUDA Driver Version = 8.0, CUDA Runtime Version = 8.0, NumDevs = 1, Device0 = GeForce GTX 1080
+Result = PASS
+```
+#
+Then we try nbody:
+```bash
+cd ../../5_Simulations/nbody/
+make
+```
+#
+```bash
+./nbody -benchmark -numbodies=256000 -device=0
+```
+#
+```bash
+Run "nbody -benchmark [-numbodies=<numBodies>]" to measure performance.
+	-fullscreen       (run n-body simulation in fullscreen mode)
+	-fp64             (use double precision floating point values for simulation)
+	-hostmem          (stores simulation data in host memory)
+	-benchmark        (run benchmark to measure performance) 
+	-numbodies=<N>    (number of bodies (>= 1) to run in simulation) 
+	-device=<d>       (where d=0,1,2.... for the CUDA device to use)
+	-numdevices=<i>   (where i=(number of CUDA devices > 0) to use for simulation)
+	-compare          (compares simulation results running once on the default GPU and once on the CPU)
+	-cpu              (run n-body simulation on the CPU)
+	-tipsy=<file.bin> (load a tipsy model file for simulation)
+
+NOTE: The CUDA Samples are not meant for performance measurements. Results may vary when GPU Boost is enabled.
+
+> Windowed mode
+> Simulation data stored in video memory
+> Single precision floating point simulation
+> 1 Devices used for simulation
+gpuDeviceInit() CUDA Device [0]: "GeForce GTX 1080
+> Compute 6.1 CUDA device: [GeForce GTX 1080]
+number of bodies = 256000
+256000 bodies, total time for 10 iterations: 2194.046 ms
+= 298.699 billion interactions per second
+= 5973.986 single-precision GFLOP/s at 20 flops per interaction
 ```
 
 
