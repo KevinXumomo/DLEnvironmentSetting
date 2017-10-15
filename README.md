@@ -511,3 +511,9 @@ Well, everything is done! cheers!!!
 
 
 
+## Anaconda Add on 10/2017
+Install the new version of anaconda for jupyter and Rstudio, following the instruction!
+After complete the installation, type the following command:
+```bash
+anaconda-navigator
+```
