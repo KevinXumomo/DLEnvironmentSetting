@@ -313,6 +313,12 @@ First, download the [cudnn](https://developer.nvidia.com/rdp/cudnn-download) .tg
 ```bash
 tar -zxvf cudnn-8.0-linux-x64-v5.1-ga.tgz
 ```
+#
+Update on 10/2017
+
+Use the latest version, such as V7.0 on 10/2017, the v5.0 will take error at this time.
+#
+
 This folder contains: 
 ```
 	cuda/include/cudnn.h
